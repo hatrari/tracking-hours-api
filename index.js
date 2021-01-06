@@ -1,12 +1,16 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 3000;
 
+app.use(cors())
 app.use(express.json())
 
 let blocks = [
-  { date: '04/01/2021', hour: '13', block: '1', color: 'red' },
-  { date: '03/01/2021', hour: '10', block: '1', color: 'red' }
+  { date: '4/1/2021', hour: '13', block: '1', color: 'red' },
+  { date: '3/1/2021', hour: '10', block: '1', color: 'black' },
+  { date: '5/1/2021', hour: '18', block: '1', color: 'gray' },
+  { date: '6/1/2021', hour: '14', block: '1', color: 'green' }
 ];
 
 app.get('/', (req, res) => { 
