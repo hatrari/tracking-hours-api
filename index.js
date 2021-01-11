@@ -7,10 +7,12 @@ app.use(cors())
 app.use(express.json())
 
 let blocks = [
-  { date: '4/1/2021', hour: '13', block: '1', color: 'red' },
-  { date: '3/1/2021', hour: '10', block: '1', color: 'black' },
-  { date: '5/1/2021', hour: '18', block: '1', color: 'gray' },
-  { date: '6/1/2021', hour: '14', block: '1', color: 'green' }
+  { date: '4-1-2021', hour: '13', block: '1', color: 'red' },
+  { date: '3-1-2021', hour: '10', block: '1', color: 'black' },
+  { date: '5-1-2021', hour: '18', block: '1', color: 'gray' },
+  { date: '6-1-2021', hour: '14', block: '1', color: 'green' },
+  { date: '6-1-2021', hour: '15', block: '5', color: 'green' },
+  { date: '11-1-2021', hour: '15', block: '5', color: 'green' }
 ];
 
 app.get('/', (req, res) => { 
@@ -29,7 +31,7 @@ app.post('/', (req, res) => {
   );
   blocksFiltred.push(block);
   blocks = blocksFiltred;
-  res.json(blocksFiltred);
+  res.json(blocksFiltred.filter(b => b.date === block.date));
 });
 
 app.listen(port, () => {
