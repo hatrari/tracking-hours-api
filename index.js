@@ -31,7 +31,7 @@ app.post('/', (req, res) => {
   );
   blocksFiltred.push(block);
   blocks = blocksFiltred;
-  res.json(blocksFiltred.filter(b => b.date === block.date));
+  res.json({success: true});
 });
 
 app.listen(port, () => {
