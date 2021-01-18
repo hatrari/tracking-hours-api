@@ -1,3 +1,17 @@
+const Block = require('./models/block');
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/blocks', 
+  {
+    useNewUrlParser: true, 
+    useUnifiedTopology: true, 
+    useCreateIndex: true
+  });
+const db = mongoose.connection;
+db.on('error', (error) => console.error(error));
+db.once('open', () => console.log('connected to database'));
+
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -6,32 +20,30 @@ const port = 3000;
 app.use(cors())
 app.use(express.json())
 
-let blocks = [
-  { date: '4-1-2021', hour: '13', block: '1', color: 'red' },
-  { date: '3-1-2021', hour: '10', block: '1', color: 'black' },
-  { date: '5-1-2021', hour: '18', block: '1', color: 'gray' },
-  { date: '6-1-2021', hour: '14', block: '1', color: 'green' },
-  { date: '6-1-2021', hour: '15', block: '5', color: 'green' },
-  { date: '11-1-2021', hour: '15', block: '5', color: 'green' }
-];
-
-app.get('/', (req, res) => { 
+app.get('/', async (req, res) => { 
+  let blocks = await Block.find({}).exec();
   res.json(blocks);
 });
 
-app.get('/:date', (req, res) => { 
+app.get('/:date', async (req, res) => { 
   let date = req.params.date;
-  res.json(blocks.filter(b => b.date === date));
+  let blocks = await Block.find({date: date}).exec();
+  res.json(blocks);
 });
 
-app.post('/', (req, res) => {
-  let block = req.body;
-  let blocksFiltred = blocks.filter(b => 
-    !(b.date === block.date && b.hour === block.hour && b.block === block.block) 
-  );
-  blocksFiltred.push(block);
-  blocks = blocksFiltred;
-  res.json({success: true});
+app.post('/', async (req, res) => {
+  try {
+    let block = new Block(req.body);
+    await block.save()
+    let blocksFiltred = blocks.filter(b => 
+      !(b.date === block.date && b.hour === block.hour && b.block === block.block) 
+    );
+    blocksFiltred.push(block);
+    blocks = blocksFiltred;
+    res.json({success: true});
+  } catch(error) {
+    res.json({success: false});
+  }
 });
 
 app.listen(port, () => {
