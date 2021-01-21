@@ -8,14 +8,9 @@ const port = 3000;
 app.use(cors())
 app.use(express.json())
 
-const blockController = require('./controllers/block');
-
-app.get('/', blockController.get);
-
-app.get('/:date', blockController.getByDate);
-
-app.post('/', blockController.post);
+const blockRoutes = require('./routes/block');
+app.use('', blockRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
-})
+});
