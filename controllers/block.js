@@ -14,12 +14,17 @@ exports.getByDate = async (req, res) => {
 exports.post = async (req, res) => {
   try {
     let block = new Block(req.body);
-    await block.save()
-    let blocksFiltred = blocks.filter(b => 
-      !(b.date === block.date && b.hour === block.hour && b.block === block.block) 
-    );
-    blocksFiltred.push(block);
-    blocks = blocksFiltred;
+    let oldBlock = await Block.find({
+      date: block.date,
+      hour: block.hour,
+      block: block.block
+    }).exec();
+    if(oldBlock.length > 0) {
+      oldBlock[0].color = block.color;
+      oldBlock[0].save();
+    } else {
+      await block.save()
+    }
     res.json({success: true});
   } catch(error) {
     res.json({success: false});
